@@ -169,11 +169,11 @@ Only the first is routine. The other four are distress signals.
 | Section | Fields |
 |---|---|
 | **Top** | `registers` — Business entities, UCC liens, or both (default). `searchQueries` — company names, entity numbers, or debtor / secured-party names |
-| **Business entity filters** | `searchType` (entity register / publicly traded disclosures), `matchType` (contains / starts with), `entityType` (35 types), `entityStatus` (24 statuses), `filedFrom`, `filedTo` — plus the disclosure-only fields: director / officer name, board composition, compensation range, auditor and `disclosureFlags` |
-| **UCC lien filters** | `uccType` (5 lien types), `uccStatus`, `uccFiledFrom`, `uccFiledTo`, `uccLapseFrom`, `uccLapseTo` |
+| **Business entity filters** | Mirrors the registry's own Business tab in the same order: `matchType` (Contains / Starts with), `searchType` (Entity Information / Publicly Traded Disclosure), `entityType` (35 types), `entityStatus` (24 statuses), `filedFrom`, `filedTo` — then the disclosure-only fields: corporation bankruptcy and legal proceedings, director / officer first, middle and last name, board composition, compensation range, the five Disclosures checkboxes (Shares, Options, Bankruptcy, Fraud, Loans to Directors) and independent auditor |
+| **UCC lien filters** | `uccStatus`, `uccType` (All, Financing Statement, Judgment Lien, State Tax Lien, Federal Tax Lien, Attachment), `uccFiledFrom`, `uccFiledTo`, `uccLapseFrom`, `uccLapseTo` |
 | **Limits & connection** | `detailLevel`, `maxResultsPerQuery`, `proxyConfiguration` |
 
-Search terms are limited to **49 characters** — the registry's own search box truncates anything longer, so a longer term would quietly run a different search than the one you typed.
+Every dropdown lists its options in the registry's own order and wording, so a filter you know from the site is where you expect it. Search terms are limited to **49 characters** — the registry's own search box truncates anything longer, so a longer term would quietly run a different search than the one you typed.
 
 ### Detail level — the main speed lever
 
