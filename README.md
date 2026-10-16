@@ -11,7 +11,7 @@ So one search for a company tells you both *what it is* and *who has a claim on 
 
 The business side has a second mode of its own, exactly as the registry's own Business tab does: **publicly traded disclosure** filings, searchable by director or officer, board composition, compensation range and auditor.
 
-**Free to run. No login, no California state API key, nothing to configure.**
+**No login, no California state API key, nothing to configure.**
 
 ## Why this Actor
 
@@ -152,6 +152,33 @@ Full profiles with addresses, ready for outreach:
 { "searchQueries": ["DEL TACO"], "detailLevel": "full", "maxResultsPerQuery": 25 }
 ```
 
+## Pricing
+
+You pay only for what a run actually does. Searching costs the same whether a term returns
+one record or five hundred, so the search is priced once and the records are priced per record.
+
+| Event | What triggers it | Price |
+|---|---|---|
+| Actor start | Once per run, per GB of memory | $0.005 |
+| Search performed | One search term against one register that returned results | $0.025 |
+| Record | One business entity or one UCC lien filing | $0.003 |
+| Full profile or filing history | A record opened for addresses, agent, standings and history | $0.004 |
+| Filing document | One filing PDF saved to the key-value store | $0.006 |
+
+Volume discounts apply automatically on paid Apify plans.
+
+**What a typical run costs**
+
+| Run | Price |
+|---|---|
+| One company across both registers, 50 records | ~$0.21 |
+| 25 full profiles with addresses and agent | ~$0.21 |
+| Two companies with all their filing PDFs | ~$0.13 |
+
+A search that returns nothing is not charged for. Set *Maximum cost per run* on the run to cap
+your spend — the Actor sizes the job to your budget before it starts, and stops rather than
+exceed it.
+
 ## What the UCC lien types mean
 
 | Lien type | What it tells you |
@@ -190,7 +217,7 @@ Keep `maxResultsPerQuery` low when downloading documents.
 
 ## Why does this Actor need a residential proxy?
 
-The registry refuses datacenter addresses — verified against both plain datacenter egress and Apify's datacenter proxy. So runs go out through a **US residential proxy** by default, and you should leave that setting alone. The Actor is free; you pay only your own Apify platform and proxy usage.
+The registry refuses datacenter addresses — verified against both plain datacenter egress and Apify's datacenter proxy. So runs go out through a **US residential proxy** by default, and you should leave that setting alone.
 
 ## What can you do with California registry data?
 
@@ -231,7 +258,7 @@ Set `entityType` to *Limited Liability Company - CA* and `entityStatus` to *Acti
 Into the run's key-value store, under the *Filing documents* collection. Each dataset record lists its documents with the key to look up.
 
 **How much does it cost?**
-The Actor is free. You pay only your own Apify platform usage and residential proxy traffic.
+You pay per event — see the Pricing section above. There is no subscription and no minimum.
 
 ---
 
