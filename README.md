@@ -1,27 +1,124 @@
-# California Business & UCC Lien Search — bizfileOnline Scraper
+## What does this California business search scraper do?
 
-Search the **official California Secretary of State** registers at [bizfileOnline](https://bizfileonline.sos.ca.gov) and get structured JSON back.
+This Actor searches the **official California Secretary of State** registers at
+[bizfileOnline](https://bizfileonline.sos.ca.gov) and returns structured JSON. It covers both
+registers at once: **business entities** (status, standing, entity type, formation date and the
+**registered agent for service of process**) and **UCC liens** (financing statements, judgment
+liens, state and federal tax liens and attachments, each with debtor, secured party, file date
+and lapse date).
 
-**Choose your registers — both are selected by default, so one search term returns both sides:**
+So one search for a company tells you both *what it is* and *who has a claim on it*.
 
-- **Business entities** — every corporation, LLC and LP in California, with status, standing, entity type, formation date and the **registered agent for service of process**.
-- **UCC liens** — filings recorded against businesses: **financing statements** (who lent against a company's assets), plus **judgment liens**, **state and federal tax liens** and **attachments**, each with debtor, secured party, file date and lapse date.
+**No login, no California state API key, nothing to configure.** A one-company lookup costs
+about **$0.05**, and a search that returns nothing is not charged for.
 
-So one search for a company tells you both *what it is* and *who has a claim on it*. Untick either register to search only the other.
-
-The business side has a second mode of its own, exactly as the registry's own Business tab does: **publicly traded disclosure** filings, searchable by director or officer, board composition, compensation range and auditor.
-
-**No login, no California state API key, nothing to configure.**
-
-## Why this Actor
-
-Most business-registry tools only let you *look up a company you already know*. This one also lets you **discover**, because it exposes the registry's own advanced filters:
+Most business-registry tools only let you *look up a company you already know*. This one also
+lets you **discover**, because it exposes the registry's own advanced filters:
 
 - Every **LLC formed in California last month** → entity type + formation-date range
 - Every **federal tax lien filed in a date range** → lien type + date range
 - Every **suspended entity** whose name contains a keyword → status filter
 
-## What data can this California business search scraper extract?
+The business side has a second mode of its own, exactly as the registry's own Business tab does:
+**publicly traded disclosure** filings, searchable by director or officer, board composition,
+compensation range and auditor.
+
+### What data can you extract from bizfileOnline?
+
+Business entity name, entity number, status, standing, entity type, jurisdiction of formation,
+initial filing date and registered agent. With **Full profile**, each record also carries its
+principal and mailing address, the agent's own address, all four standings and the Statement of
+Information due date. For UCC filings you get every debtor and secured party with full street
+addresses — which frequently names the **individual** behind a trading name. **Filing history**
+adds every filing plus the registry's field-level change history, and **Download documents**
+saves each filing as a PDF.
+
+### Running it on Apify
+
+Because it runs on the Apify platform, you also get **scheduling** (run a watchlist every
+morning), **API access** to pull results straight into your own system, **integrations** with
+Make, Zapier, Google Sheets, Slack and webhooks, and **automatic proxy rotation** — the registry
+refuses datacenter addresses, so runs go out through a US residential proxy by default.
+
+## How to scrape California business records
+
+1. Click **Try for free** to open the Actor, or add it to your Apify account.
+2. Under **Which registers to search**, keep both registers selected, or pick just one.
+3. Type one or more **Search terms** — a company name, a California entity number such as
+   `3814816`, or a debtor name. Terms are limited to 49 characters, the registry's own limit.
+4. *(Optional)* Open **Business entity filters** or **UCC lien filters** to narrow by entity
+   type, status, lien type or a date range.
+5. *(Optional)* Under **Limits & connection**, raise **Detail level** from *Search results only*
+   to *Full profile*, *Filing history* or *Download documents*, and set **Maximum results per
+   search**.
+6. Click **Save & start**. Records stream into the dataset as they are extracted, so a large
+   search starts filling in immediately.
+7. Export from the **Output** tab as JSON, CSV, Excel or XML, or fetch it from the API.
+
+## How much does it cost to scrape California business data?
+
+You pay only for what a run actually does. Searching costs the same whether a term returns one
+record or five hundred, so the search is priced once and the records are priced per record.
+
+| Event | What triggers it | Price |
+|---|---|---|
+| Actor start | Once per run, per GB of memory | $0.005 |
+| Search performed | One search term against one register that returned results | $0.025 |
+| Record | One business entity or one UCC lien filing | $0.003 |
+| Full profile or filing history | A record opened for addresses, agent, standings and history | $0.004 |
+| Filing document | One filing PDF saved to the key-value store | $0.006 |
+
+Volume discounts apply automatically on paid Apify plans.
+
+**What a typical run costs**
+
+| Run | Price |
+|---|---|
+| 50 business records for one search term | **$0.185** |
+| One company across both registers, 50 records | ~$0.21 |
+| 25 full profiles with addresses and agent | ~$0.21 |
+| Two companies with all their filing PDFs | ~$0.13 |
+
+The $0.185 figure is a real run: 50 records in 15 seconds, shown in the output screenshot below.
+
+A search that returns nothing is not charged for. Set **Maximum cost per run** in *Run options*
+to cap your spend — the Actor sizes the job to your budget before it starts, and stops rather
+than exceed it.
+
+## Input and output examples
+
+### Input
+
+Pick your registers, type a search term, and run. Everything else is optional.
+
+[![California business and UCC lien search input](https://raw.githubusercontent.com/FlowExtractAPI/california-bizfile-scraper/main/docs/images/california-business-ucc-search-input.png)](https://apify.com/dz_omar/california-bizfile-scraper)
+
+The simplest possible input searches both registers:
+
+```json
+{ "searchQueries": ["DEL TACO"] }
+```
+
+Every LLC formed in January 2024 — a new-business lead list:
+
+```json
+{
+  "searchQueries": ["California"],
+  "entityType": "3",
+  "filedFrom": "2024-01-01",
+  "filedTo": "2024-01-31"
+}
+```
+
+Full profiles with addresses, ready for outreach:
+
+```json
+{ "searchQueries": ["DEL TACO"], "detailLevel": "full", "maxResultsPerQuery": 25 }
+```
+
+### Output
+
+[![California business entity results in the Apify dataset](https://raw.githubusercontent.com/FlowExtractAPI/california-bizfile-scraper/main/docs/images/california-business-entity-results.png)](https://apify.com/dz_omar/california-bizfile-scraper)
 
 ### Business entity record
 
@@ -58,7 +155,7 @@ Most business-registry tools only let you *look up a company you already know*. 
 }
 ```
 
-### With **Full profile**, every record also carries its addresses
+### Full profile adds every address
 
 ```json
 {
@@ -73,7 +170,8 @@ Most business-registry tools only let you *look up a company you already know*. 
 }
 ```
 
-and every UCC party gets a street address — often naming an **individual** behind a trading name that the search rows never show:
+and every UCC party gets a street address — often naming an **individual** behind a trading name
+that the search rows never show:
 
 ```json
 {
@@ -87,7 +185,7 @@ and every UCC party gets a street address — often naming an **individual** beh
 }
 ```
 
-### With **Download documents**, the filings themselves come back as PDFs
+### Downloaded filing documents
 
 ```json
 {
@@ -107,79 +205,44 @@ and every UCC party gets a street address — often naming an **individual** beh
 
 Each `key` is a record in the run's **key-value store**, under the *Filing documents* collection.
 
-Records are written to the dataset **as they are extracted**, so a large search starts filling in immediately instead of arriving in one batch at the end.
+## Other Actors you might need
 
-## How to use it
-
-Search a company in both registers — this is the default:
-
-```json
-{ "searchQueries": ["DEL TACO"] }
-```
-
-Only the lien side:
-
-```json
-{ "registers": ["ucc"], "searchQueries": ["DEL TACO"] }
-```
-
-One exact entity, by its California entity/file number:
-
-```json
-{ "searchQueries": ["3814816"] }
-```
-
-Every LLC formed in January 2024 — a new-business lead list:
-
-```json
-{
-  "searchQueries": ["California"],
-  "entityType": "3",
-  "filedFrom": "2024-01-01",
-  "filedTo": "2024-01-31"
-}
-```
-
-Only federal tax liens on the UCC side:
-
-```json
-{ "searchQueries": ["Tesla"], "uccType": "2174" }
-```
-
-Full profiles with addresses, ready for outreach:
-
-```json
-{ "searchQueries": ["DEL TACO"], "detailLevel": "full", "maxResultsPerQuery": 25 }
-```
-
-## Pricing
-
-You pay only for what a run actually does. Searching costs the same whether a term returns
-one record or five hundred, so the search is priced once and the records are priced per record.
-
-| Event | What triggers it | Price |
-|---|---|---|
-| Actor start | Once per run, per GB of memory | $0.005 |
-| Search performed | One search term against one register that returned results | $0.025 |
-| Record | One business entity or one UCC lien filing | $0.003 |
-| Full profile or filing history | A record opened for addresses, agent, standings and history | $0.004 |
-| Filing document | One filing PDF saved to the key-value store | $0.006 |
-
-Volume discounts apply automatically on paid Apify plans.
-
-**What a typical run costs**
-
-| Run | Price |
+| Actor | What it does |
 |---|---|
-| One company across both registers, 50 records | ~$0.21 |
-| 25 full profiles with addresses and agent | ~$0.21 |
-| Two companies with all their filing PDFs | ~$0.13 |
+| [LinkedIn Company Scraper](https://apify.com/dz_omar/linkedin-company-scraper) | Public company pages — size, industry, headquarters and specialties |
+| [LinkedIn Jobs Scraper](https://apify.com/dz_omar/linkedin-jobs-scraper) | Public job listings by keyword, location and date |
+| [Ultimate Lead Extractor](https://apify.com/dz_omar/ai-lead-extractor) | Emails, phone numbers and social profiles from any list of websites |
+| [Facebook Posts Scraper](https://apify.com/dz_omar/facebook-posts-scraper) | Posts from public pages, profiles and groups |
 
-A search that returns nothing is not charged for. Set *Maximum cost per run* on the run to cap
-your spend — the Actor sizes the job to your budget before it starts, and stops rather than
-exceed it.
+A typical pipeline: pull newly formed California LLCs here, enrich the company names with
+LinkedIn, then find contact details with the lead extractor.
 
-## What the UCC lien types mean
+## Frequently asked questions
+
+### Is it legal to scrape California business records?
+
+California business-entity and UCC records are **public records**. This Actor reads the open
+public searches at [bizfileonline.sos.ca.gov](https://bizfileonline.sos.ca.gov) — it does not log
+in and does not pass any paywall. Use the data lawfully for KYB/AML, due-diligence and B2B
+purposes.
+
+### Do I need a California state API key?
+
+No. The state's own bulk API is key-gated and capped. This Actor reads the open public search, so
+there is nothing to obtain or configure.
+
+### What can I use California registry data for?
+
+- **KYB / KYC onboarding** — verify an entity exists, is active and is in good standing.
+- **Registered-agent intelligence** — the agent for service of process, for legal or sales work.
+- **Lending and credit risk** — check existing liens, and see who already has a claim on the collateral.
+- **Distress and collections** — tax liens, judgment liens and attachments identify businesses in
+  trouble, and full profiles name the individuals behind them.
+- **Competitive intelligence for lenders** — a fresh financing statement shows a company just
+  borrowed, and names its current lender.
+- **Lead generation** — pull newly formed companies by type and formation month, with addresses.
+
+### What do the UCC lien types mean?
 
 | Lien type | What it tells you |
 |---|---|
@@ -191,84 +254,77 @@ exceed it.
 
 Only the first is routine. The other four are distress signals.
 
-## Input options
+### Why does this Actor need a residential proxy?
 
-| Section | Fields |
-|---|---|
-| **Top** | `registers` — Business entities, UCC liens, or both (default). `searchQueries` — company names, entity numbers, or debtor / secured-party names |
-| **Business entity filters** | Mirrors the registry's own Business tab in the same order: `matchType` (Contains / Starts with), `searchType` (Entity Information / Publicly Traded Disclosure), `entityType` (35 types), `entityStatus` (24 statuses), `filedFrom`, `filedTo` — then the disclosure-only fields: corporation bankruptcy and legal proceedings, director / officer first, middle and last name, board composition, compensation range, the five Disclosures checkboxes (Shares, Options, Bankruptcy, Fraud, Loans to Directors) and independent auditor |
-| **UCC lien filters** | `uccStatus`, `uccType` (All, Financing Statement, Judgment Lien, State Tax Lien, Federal Tax Lien, Attachment), `uccFiledFrom`, `uccFiledTo`, `uccLapseFrom`, `uccLapseTo` |
-| **Limits & connection** | `detailLevel`, `maxResultsPerQuery`, `proxyConfiguration` |
+The registry refuses datacenter addresses — verified against both plain datacenter egress and
+Apify's datacenter proxy. So runs go out through a **US residential proxy** by default, and you
+should leave that setting alone.
 
-Every dropdown lists its options in the registry's own order and wording, so a filter you know from the site is where you expect it. Search terms are limited to **49 characters** — the registry's own search box truncates anything longer, so a longer term would quietly run a different search than the one you typed.
+### Why did my business search return exactly 500 records?
 
-### Detail level — the main speed lever
+That is the register's own hard per-term ceiling. The run warns you when a search hits it. Narrow
+the term, or add an entity type, status or formation-date filter.
 
-| Level | What you get | Cost |
+### Why did I get a message about more than 1,000 UCC filings?
+
+The UCC register refuses to answer a term matching more than 1,000 filings rather than returning a
+partial list — common words like "Tesla" or "California" hit this easily. Your business-entity
+results are unaffected. Search a fuller name, or narrow the UCC side with a lien type, status or
+date range.
+
+### Why did the UCC side get skipped entirely?
+
+Either you unticked it under *Which registers to search*, or the term is shorter than 3
+characters — the UCC register's own minimum. Shorter terms search the business register only.
+
+### Why is my search term limited to 49 characters?
+
+Because the registry's own search box truncates anything past 49 characters. Accepting a longer
+term would run a silently different search than the one you typed.
+
+### How do I search publicly traded disclosures?
+
+Set *Search type* to *Publicly traded disclosure search* in the business filters. That switches
+the business side to the disclosure register and enables the director/officer, board-composition,
+compensation and auditor fields.
+
+### How do I get only active LLCs?
+
+Set `entityType` to *Limited Liability Company - CA* and `entityStatus` to *Active*.
+
+### Where do downloaded documents go?
+
+Into the run's key-value store, under the *Filing documents* collection. Each dataset record lists
+its documents with the key to look up.
+
+### What does each detail level cost me in time?
+
+| Level | What you get | Speed |
 |---|---|---|
 | **Search results only** | The registers' own columns | Fastest — one request per search |
 | **+ Full profile** | Addresses, agent record, all four standings, SOI due date | One extra request per record |
 | **+ Filing history** | Every filing, its document link, and field-level change history | Two extra requests per record |
-| **+ Download documents** | Each filing fetched as a PDF into the key-value store | Slowest — a single company can have ten or more filings |
+| **+ Download documents** | Each filing fetched as a PDF into the key-value store | Slowest — a company can have ten or more filings |
 
-Keep `maxResultsPerQuery` low when downloading documents.
+Keep **Maximum results per search** low when downloading documents. The cap applies **per
+register**, so `10` returns up to 10 business records *and* up to 10 UCC records per term.
 
-`maxResultsPerQuery` applies **per register**, so `10` returns up to 10 business records *and* up to 10 UCC records for each search term.
+### Can I use this in Make, Zapier or my own code?
 
-## Why does this Actor need a residential proxy?
-
-The registry refuses datacenter addresses — verified against both plain datacenter egress and Apify's datacenter proxy. So runs go out through a **US residential proxy** by default, and you should leave that setting alone.
-
-## What can you do with California registry data?
-
-- **KYB / KYC onboarding** — verify an entity exists, is active and is in good standing before you onboard it.
-- **Registered-agent intelligence** — get the agent for service of process, for legal, compliance or sales work.
-- **Lending and credit risk** — check existing liens before lending, and see who already has a claim on the collateral.
-- **Distress and collections** — tax liens, judgment liens and attachments identify businesses in trouble, and full profiles name the individuals behind them.
-- **Competitive intelligence for lenders** — a fresh financing statement shows a company just borrowed, and names its current lender.
-- **Lead generation** — pull newly formed companies by type and formation month, with mailing addresses.
-
-## Frequently asked questions
-
-**Is it legal to scrape California business records?**
-California business-entity and UCC records are **public records**. This Actor reads the open public searches at [bizfileonline.sos.ca.gov](https://bizfileonline.sos.ca.gov) — it does not log in and does not pass any paywall. Use the data lawfully for KYB/AML, due-diligence and B2B purposes.
-
-**Do I need a California state API key?**
-No. The state's own bulk API is key-gated and capped. This Actor reads the open public search, so there is nothing to obtain or configure.
-
-**Why did my business search return exactly 500 records?**
-That is the register's own hard per-term ceiling. The run warns you when a search hits it. Narrow the term, or add an entity type, status or formation-date filter.
-
-**Why did I get a message about more than 1,000 UCC filings?**
-The UCC register refuses to answer a term matching more than 1,000 filings rather than returning a partial list — common words like "Tesla" or "California" hit this easily. Your business-entity results are unaffected. Search a fuller name, or narrow the UCC side with a lien type, status or date range.
-
-**Why did the UCC side get skipped entirely?**
-Either you unticked it under *Which registers to search*, or the term is shorter than 3 characters — the UCC register's own minimum. Shorter terms search the business register only.
-
-**Why is my search term limited to 49 characters?**
-Because the registry's own search box truncates anything past 49 characters. Accepting a longer term would run a silently different search than the one you typed.
-
-**How do I search publicly traded disclosures?**
-Set *Search type* to *Publicly traded disclosure search* in the business filters. That switches the business side to the disclosure register and enables the director/officer, board-composition, compensation and auditor fields.
-
-**How do I get only active LLCs?**
-Set `entityType` to *Limited Liability Company - CA* and `entityStatus` to *Active*.
-
-**Where do downloaded documents go?**
-Into the run's key-value store, under the *Filing documents* collection. Each dataset record lists its documents with the key to look up.
-
-**How much does it cost?**
-You pay per event — see the Pricing section above. There is no subscription and no minimum.
-
----
+Yes. Every run is available through the Apify API, and the Actor works with Apify's Make, Zapier,
+Google Sheets, Slack and webhook integrations. You can also schedule it to re-run a watchlist of
+companies and only act on what changed.
 
 ## Support
 
-Found a bug, or need a field this Actor does not return yet? Open an issue on the Actor's **Issues** tab and it will be looked at.
+Found a bug, or need a field this Actor does not return yet? Open an issue on the Actor's
+**Issues** tab and it will be looked at.
 
 ## Legal & compliance
 
-This Actor collects publicly available business-registry information only. You are responsible for using the extracted data in compliance with applicable laws, including data-protection rules in your jurisdiction, and with the source's terms.
+This Actor collects publicly available business-registry information only. You are responsible for
+using the extracted data in compliance with applicable laws, including data-protection rules in
+your jurisdiction, and with the source's terms.
 
 ---
 
