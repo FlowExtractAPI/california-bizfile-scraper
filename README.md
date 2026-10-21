@@ -91,7 +91,7 @@ than exceed it.
 
 Pick your registers, type a search term, and run. Everything else is optional.
 
-[![California business and UCC lien search input](https://raw.githubusercontent.com/FlowExtractAPI/california-bizfile-scraper/main/docs/images/california-business-ucc-search-input.png)](https://apify.com/dz_omar/california-bizfile-scraper)
+[![California business and UCC lien search input](https://raw.githubusercontent.com/FlowExtractAPI/california-bizfile-scraper/main/docs/images/california-business-ucc-search-input.png)](https://apify.com/dz_omar/california-bizfile-scraper?fpr=smcx63)
 
 The simplest possible input searches both registers:
 
@@ -118,7 +118,7 @@ Full profiles with addresses, ready for outreach:
 
 ### Output
 
-[![California business entity results in the Apify dataset](https://raw.githubusercontent.com/FlowExtractAPI/california-bizfile-scraper/main/docs/images/california-business-entity-results.png)](https://apify.com/dz_omar/california-bizfile-scraper)
+[![California business entity results in the Apify dataset](https://raw.githubusercontent.com/FlowExtractAPI/california-bizfile-scraper/main/docs/images/california-business-entity-results.png)](https://apify.com/dz_omar/california-bizfile-scraper?fpr=smcx63)
 
 ### Business entity record
 
@@ -209,18 +209,18 @@ Each `key` is a record in the run's **key-value store**, under the *Filing docum
 
 | Actor | What it does |
 |---|---|
-| [Delaware Business Search](https://apify.com/dz_omar/delaware-corporations-scraper) | The Delaware Division of Corporations registry — file number, formation date, entity type and the registered agent's name, address and phone, many entities at once |
-| [LinkedIn Company Scraper](https://apify.com/dz_omar/linkedin-company-scraper) | Public company pages — size, industry, headquarters and specialties |
-| [LinkedIn Jobs Scraper](https://apify.com/dz_omar/linkedin-jobs-scraper) | Public job listings by keyword, location and date |
-| [Ultimate Lead Extractor](https://apify.com/dz_omar/ai-lead-extractor) | Emails, phone numbers and social profiles from any list of websites |
-| [Facebook Posts Scraper](https://apify.com/dz_omar/facebook-posts-scraper) | Posts from public pages, profiles and groups |
+| [Delaware Business Search](https://apify.com/dz_omar/delaware-corporations-scraper?fpr=smcx63) | The Delaware Division of Corporations registry — file number, formation date, entity type and the registered agent's name, address and phone, many entities at once |
+| [LinkedIn Company Scraper](https://apify.com/dz_omar/linkedin-company-scraper?fpr=smcx63) | Public company pages — size, industry, headquarters and specialties |
+| [LinkedIn Jobs Scraper](https://apify.com/dz_omar/linkedin-jobs-scraper?fpr=smcx63) | Public job listings by keyword, location and date |
+| [AI Scraper](https://apify.com/dz_omar/ai-lead-extractor?fpr=smcx63) | Emails, phone numbers and social profiles from any list of websites |
+| [Facebook Posts Scraper](https://apify.com/dz_omar/facebook-posts-scraper?fpr=smcx63) | Posts from public pages, profiles and groups |
 
 Many California businesses are Delaware corporations registered here as out-of-state entities —
 when a record shows **Formed in: DELAWARE**, look it up in the Delaware registry for its home-state
 formation details and registered agent.
 
 A typical pipeline: pull newly formed California LLCs here, enrich the company names with
-LinkedIn, then find contact details with the lead extractor.
+LinkedIn, then find contact details with the AI Scraper.
 
 ## Frequently asked questions
 
