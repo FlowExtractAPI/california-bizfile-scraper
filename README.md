@@ -209,10 +209,15 @@ Each `key` is a record in the run's **key-value store**, under the *Filing docum
 
 | Actor | What it does |
 |---|---|
+| [Delaware Business Search](https://apify.com/dz_omar/delaware-corporations-scraper) | The Delaware Division of Corporations registry — file number, formation date, entity type and the registered agent's name, address and phone, many entities at once |
 | [LinkedIn Company Scraper](https://apify.com/dz_omar/linkedin-company-scraper) | Public company pages — size, industry, headquarters and specialties |
 | [LinkedIn Jobs Scraper](https://apify.com/dz_omar/linkedin-jobs-scraper) | Public job listings by keyword, location and date |
 | [Ultimate Lead Extractor](https://apify.com/dz_omar/ai-lead-extractor) | Emails, phone numbers and social profiles from any list of websites |
 | [Facebook Posts Scraper](https://apify.com/dz_omar/facebook-posts-scraper) | Posts from public pages, profiles and groups |
+
+Many California businesses are Delaware corporations registered here as out-of-state entities —
+when a record shows **Formed in: DELAWARE**, look it up in the Delaware registry for its home-state
+formation details and registered agent.
 
 A typical pipeline: pull newly formed California LLCs here, enrich the company names with
 LinkedIn, then find contact details with the lead extractor.
